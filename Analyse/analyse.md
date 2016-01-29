@@ -66,5 +66,5 @@ Année d'obtention du diplôme
 ![](analyse_files/figure-html/unnamed-chunk-4-1.png)
 
 - diplômes antérieurs à 2007: 82
-- diplômes depuis 2004: 42
+- diplômes depuis 2007: 42
 

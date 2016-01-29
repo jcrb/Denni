@@ -6,6 +6,7 @@ output:
   html_document:
     keep_md: yes
     number_sections: yes
+  word_document: default
 ---
 
 ```{r, echo=FALSE}
@@ -48,5 +49,5 @@ abline(v = 2007, col = "red", lty = 2)
 ```
 
 - diplômes antérieurs à 2007: `r length(olddip)`
-- diplômes depuis 2004: `r length(newdip)`
+- diplômes depuis 2007: `r length(newdip)`
 

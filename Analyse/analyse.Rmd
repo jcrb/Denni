@@ -1,0 +1,52 @@
+---
+title: "Expression abdominale"
+author: "JcB - Pauline DENNI"
+date: "29/01/2016"
+output:
+  html_document:
+    keep_md: yes
+    number_sections: yes
+---
+
+```{r, echo=FALSE}
+path <- "../"
+file <- "Data/Resultats_questionnaire_travail.csv"
+d <- read.csv(paste0(path, file))
+
+```
+
+- Nombre d'observations: `r nrow(d)`
+- Nombre de variables: `r ncol(d)`
+
+```{r, echo=FALSE, comment=""}
+str(d)
+
+```
+
+Année d'obtention du diplôme
+============================
+
+```{r, echo=FALSE}
+mindip <- min(d$andip, na.rm = TRUE)
+maxdip <- max(d$andip, na.rm = TRUE)
+n.dip.na <- sum(is.na(d$andip))
+p.dip.na <- mean(is.na(d$andip))
+
+```
+
+- Diplôme le plus ancien: `r mindip`
+- Diplôme le plus récent: `r maxdip`
+- Année du diplôme non renseignée: `r n.dip.na` fois (`r round(p.dip.na * 100, 2)` %)
+
+```{r, echo=FALSE}
+olddip <- d$andip[!is.na(d$andip) & d$andip < 2007]
+newdip <- d$andip[!is.na(d$andip) & d$andip >= 2007]
+
+hist(d$andip, main = "Année d'obtention du diplôme", ylab = "Fréquence", col = "cornflowerblue", border = "white", xlab = "")
+abline(v = 2007, col = "red", lty = 2)
+
+```
+
+- diplômes antérieurs à 2007: `r length(olddip)`
+- diplômes depuis 2004: `r length(newdip)`
+

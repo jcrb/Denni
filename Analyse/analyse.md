@@ -68,3 +68,13 @@ Année d'obtention du diplôme
 - diplômes antérieurs à 2007: 82
 - diplômes depuis 2007: 42
 
+Relation année du diplôme - expression
+--------------------------------------
+
+```r
+a <- tapply(d$freq, d$andip, length)
+barplot(a)
+```
+
+![](analyse_files/figure-html/unnamed-chunk-5-1.png)
+

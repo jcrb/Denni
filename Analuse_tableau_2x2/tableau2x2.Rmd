@@ -1,0 +1,168 @@
+---
+title: "Analyse d'un tableau 2 x 2"
+author: "JcB"
+date: "30/01/2016"
+output:
+  pdf_document:
+    latex_engine: xelatex
+    number_sections: yes
+subtitle: Eléments de statistiques
+---
+
+Calcul des valeurs caractéristiques
+===================================
+
+```{r init, echo=FALSE}
+source("tableau2x2.R")
+```
+
+Création d'une table 2x2
+------------------------
+
+A partr de 2 vecteurs de variables nominales dichotomiques. Chez 10 sujets on mesure 2 variables:
+
+- age > 50 ans: oui = 1, non = 0
+- présence de métastases: oui = 1, non = 2
+
+```{r}
+v1 <- c(1,1,1,0,0,1,0,1,0,1)
+v2 <- c(1,1,0,0,0,1,1,1,0,1)
+```
+
+Création d'un tableau de contingence 2x2 avec la routine twoxtwo qui est 4 à 5 fois plus rapide que la fonction _table_.
+```{r}
+twotab <- twoXtwo(v1,v2, c("Age > 50","Présence de métas"))
+twotab
+```
+
+### Tableau exprimé en pourcentages
+```{r}
+ptab = prop.table(twotab)
+round(ptab, 2)
+```
+
+Toutes les cases sont divisées par l'effectif total.
+
+### Tableau exprimé en pourcentage des lignes
+```{r}
+rowtab = prop.table(twotab, margin=1)
+round(rowtab, 2)
+```
+
+Toutes les cases sont divisées par l'effectif de la ligne
+
+### Tableau exprimé en pourcentage des colonnes
+```{r}
+coltab = prop.table(twotab, margin=2)
+round(coltab, 2)
+```
+
+Toutes les cases sont divisées par l'effectif de la colonne
+
+### Précision
+```{r}
+accur = sum(diag(ptab))
+accur
+```
+
+### Sensibilité
+```{r}
+sens = rowtab["TRUE", "TRUE"]
+sens
+```
+
+### Spécificité
+```{r}
+spec = rowtab["FALSE", "FALSE"]
+spec
+```
+
+### Valeur prédictive positive
+```{r}
+ppv = coltab["TRUE", "TRUE"]
+ppv
+```
+
+### Valeur prédictive négative
+```{r}
+npv = coltab["FALSE", "FALSE"]
+npv
+```
+
+### Chi2
+```{r}
+chisq.test(twotab)
+
+```
+
+### Fisher exact
+```{r}
+fisher.test(twotab)
+
+```
+
+### Test de Barnard
+```{r}
+Barnard(twotab)
+
+```
+
+
+### Odds ratio
+```{r}
+# oddsratioWald.proc(3,1,1,5)
+oddsratioWald.proc(twotab["FALSE", "FALSE"], twotab["FALSE", "TRUE"], twotab["TRUE", "FALSE"], twotab["TRUE", "TRUE"])
+
+```
+
+### Aspect graphique
+
+```{r}
+mosaicplot(twotab)
+
+```
+
+Compléments
+===========
+
+[Plus de 2 modalités](http://www.cyclismo.org/tutorial/R/tables.html)
+
+About Barnard’s exact test
+---------------------------
+
+[Source](http://www.r-statistics.com/2010/02/barnards-exact-test-a-powerful-alternative-for-fishers-exact-test-implemented-in-r/)
+
+About half a year ago, I was studying various statistical methods to employ on contingency tables. I came across a promising method for 2×2 contingency tables called “Barnard’s exact test“. Barnard’s test is a non-parametric alternative to [Fisher’s exact test](http://www.wikiwand.com/en/Fisher%27s_exact_test) which can be more powerful (for 2×2 tables) but is also more time-consuming to compute (References can be found in the [Wikipedia article](http://www.wikiwand.com/en/Barnard%27s_test    ) on the subject).
+
+The test was first published by George [Alfred Barnard](http://www.wikiwand.com/en/George_Alfred_Barnard) (1945) ([link to the original paper in Nature](http://www.nature.com/nature/journal/v156/n3974/abs/156783b0.html)). [Mehta and Senchaudhuri (2003)](http://www.cytel.com/Papers/twobinomials.pdf) explain why Barnard’s test can be more powerful than Fisher’s under certain conditions:
+
+_When comparing Fisher’s and Barnard’s exact tests, the loss of power due to the greater discreteness of the Fisher statistic is somewhat offset by the requirement that Barnard’s exact test must maximize over all possible p-values, by choice of the nuisance parameter, π. For 2 × 2 tables the loss of power due to the discreteness dominates over the loss of power due to the maximization, resulting in greater power for Barnard’s exact test. But as the number of rows and columns of the observed table increase, the maximizing factor will tend to dominate, and Fisher’s exact test will achieve greater power than Barnard’s._
+
+### About the R implementation of Barnard’s exact test
+
+After finding about Barnard’s test I was sad to discover that (at the time) there had been no R implementation of it. But last week, I received a surprising e-mail with good news. The sender, Peter Calhoun, currently a graduate student at the University of Florida, had implemented the algorithm in R. Peter had  found my posting on the R mailing list (from almost half a year ago) and was so kind as to share with me (and the rest of the R community) his R code for computing Barnard’s exact test. Here is some of what Peter wrote to me about his code:
+
+On a side note, I believe there are more efficient codes than this one.  For example, I’ve seen codes in Matlab that run faster and display nicer-looking graphs.  However, this code will still provide accurate results and a plot that gives the p-value based on the nuisance parameter.  I did not come up with the idea of this code, I simply translated Matlab code into R, occasionally using different methods to get the same result.  The code was translated from:
+
+Trujillo-Ortiz, A., R. Hernandez-Walls, A. Castro-Perez, L. Rodriguez-Cardozo. Probability Test.  A MATLAB file. URL
+
+    http://www.mathworks.com/matlabcentral/fileexchange/loadFile.do?objectId=6198
+
+My goal was to make this test accessible to everyone.  Although there are many ways to run this test through Matlab, I hadn’t seen any code to implement this test in R.  I hope it is useful for you, and if you have any questions or ways to improve this code, please contact me at calhoun.peter@gmail.com
+
+
+Update (21.04.2010): In case you are facing a table with structural zeros (that is, missing values in the table), the package [aylmer](http://cran.r-project.org/web/packages/aylmer/index.html) might be able to help you (it offers a generalization of Fisher’s exact test)
+
+Update (16.06.2011): A more updated (and faster) code is now available on the post (thanks goes, again, to Peter Calhoun). The post is updated with a newer example. The old R code for the function can still be [found here](http://www.r-statistics.com/wp-content/uploads/2010/02/Barnardtest.R.txt).
+
+Update (12.04.2012): I just found out that there is a new R package (from 2011-11-21) that also implements Barnard’s test. You can find it [here](http://cran.r-project.org/web/packages/Barnard/).
+
+
+Computing Odds Ratios in R
+----------------------------
+
+[ExploringDataBlog](http://exploringdatablog.blogspot.fr/2011/05/computing-odds-ratios-in-r.html)
+
+[Measuring association using odds ratios](http://exploringdatablog.blogspot.fr/2011_04_01_archive.html)
+
+

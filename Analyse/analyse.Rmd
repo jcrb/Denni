@@ -51,3 +51,11 @@ abline(v = 2007, col = "red", lty = 2)
 - diplômes antérieurs à 2007: `r length(olddip)`
 - diplômes depuis 2007: `r length(newdip)`
 
+Relation année du diplôme - expression
+--------------------------------------
+```{r}
+a <- tapply(d$freq, d$andip, length)
+barplot(a)
+
+```
+

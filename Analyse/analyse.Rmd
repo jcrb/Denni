@@ -53,9 +53,55 @@ abline(v = 2007, col = "red", lty = 2)
 
 Relation année du diplôme - expression
 --------------------------------------
+
+### Fréquence des expressions mensuelles en foction de 'année du diplôme
 ```{r}
-a <- tapply(d$freq, d$andip, length)
-barplot(a)
+# tableau croisé freq x année = 32 x 10. Chaque ligne correspond à un années. Les colonnes corrzspondent aux féquences mensuelles.
+t <- table(d$andip, d$freq)
+# exemple:
+head(t)
+# on calcule la somme de chaque ligne multipliée par la fréquence. La fréquence est connée par le nom des colonnes transformées en numérique:
+t2 <- apply(t, 1, function(x){sum(x * as.numeric(colnames(t)))})
+# on obtient un tableau à 2 colonnes: année x nb d'expression mensuelle
+barplot(t2, las = 2, ylab = "Nombre d'expression par mois", xlab = "Année d'obtention du diplôme", main = "Expression utérine et année du diplôme")
+
+# alternative plus rapide avec aggregate:
+# ag <- aggregate(d$freq, by=list(Annee = d$andip), FUN=sum)
+# barplot(ag$x, names.arg = ag$Annee, las = 2)
+
+
+# Cependant les effectifs annuels sont trop faibles pour tirer une conclusion: en moyenne 4 SF par année.
+s <- apply(t, 1,  sum)
+summary(s)
+
+barplot(s, las = 2, ylab = "Nombre de réponses", xlab = "Année d'obtetion du diplôme", main = " Effectif de l'échantillon et année du diplôme")
 
 ```
+
+Si on divise l'échantillon en 2 selon que le diplome ait été obtenu avant ou après 2007
+
+```{r}
+d$dip <- ifelse(d$andip < 2008, "<2007",">2007")
+table(d$dip)
+
+# table
+t <- table(d$dip, d$freq)
+t
+fisher.test(t)
+
+```
+Pas de différence de comportement selon que le diplôme ait été obtenu avant ou après 2007.
+
+Selon le type de maternité
+==========================
+
+```{r}
+table(d$type)
+
+t <- table(d$type, d$freq)
+t
+
+```
+
+
 

@@ -191,5 +191,86 @@ t
 ##   4  6   2    0   0   6  2  0  0  0  0
 ```
 
+```r
+# fisher.test(t)
 
+chisq.test(t)
+```
+
+```
+## Warning in chisq.test(t): Chi-squared approximation may be incorrect
+```
+
+```
+## 
+## 	Pearson's Chi-squared test
+## 
+## data:  t
+## X-squared = 48.139, df = 27, p-value = 0.007408
+```
+
+
+Selon le type d'exercice
+========================
+
+
+```r
+t <- table(d$pp, d$freq)
+t
+```
+
+```
+##    
+##      0 0.1 0.25 0.3 0.5  1  2  3  5 10
+##   1 29   4    5   0   9 21  5  2  2  0
+##   2  6   4    2   1   6 12  9  5  0  1
+```
+
+```r
+chisq.test(t)
+```
+
+```
+## Warning in chisq.test(t): Chi-squared approximation may be incorrect
+```
+
+```
+## 
+## 	Pearson's Chi-squared test
+## 
+## data:  t
+## X-squared = 19.296, df = 9, p-value = 0.02279
+```
+
+```r
+chisq.test(t)$residuals
+```
+
+```
+## Warning in chisq.test(t): Chi-squared approximation may be incorrect
+```
+
+```
+##    
+##               0         0.1        0.25         0.3         0.5
+##   1  1.51455324 -0.45048338  0.29516622 -0.79121189 -0.12734963
+##   2 -1.95952582  0.58283446 -0.38188544  1.02366830  0.16476469
+##    
+##               1           2           3           5          10
+##   1  0.07512672 -1.27150788 -1.13794345  0.66845921 -0.79121189
+##   2 -0.09719879  1.64507424  1.47226887 -0.86485113  1.02366830
+```
+
+```r
+fisher.test(t)
+```
+
+```
+## 
+## 	Fisher's Exact Test for Count Data
+## 
+## data:  t
+## p-value = 0.01114
+## alternative hypothesis: two.sided
+```
 

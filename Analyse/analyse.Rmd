@@ -101,7 +101,22 @@ table(d$type)
 t <- table(d$type, d$freq)
 t
 
+# fisher.test(t)
+
+chisq.test(t)
 ```
 
 
+Selon le type d'exercice
+========================
+
+```{r}
+t <- table(d$pp, d$freq)
+t
+
+chisq.test(t)
+chisq.test(t)$residuals
+
+fisher.test(t)
+```
 
